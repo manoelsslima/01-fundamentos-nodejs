@@ -1,4 +1,5 @@
 import http from 'node:http';
+import { randomUUID } from 'node:crypto';
 // when using "type": "module" in package.json, we must explicit the extension .js on imports
 import { json } from './middlewares/json.js';
 import { Database } from './database.js';
@@ -23,7 +24,7 @@ const server = http.createServer(async (req, res) => {
         const { name, email } = req.body;
 
         const user = {
-            id: 1,
+            id: randomUUID(),
             name, // same as name = name or name = body.name
             email // same as email = email or email = body.email
         }
