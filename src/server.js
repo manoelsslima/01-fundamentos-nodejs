@@ -1,8 +1,9 @@
 import http from 'node:http';
 // when using "type": "module" in package.json, we must explicit the extension .js on imports
 import { json } from './middlewares/json.js';
+import { Database } from './database.js';
 
-const users = [];
+const database = new Database();
 
 const server = http.createServer(async (req, res) => {
 
@@ -12,6 +13,8 @@ const server = http.createServer(async (req, res) => {
     await json(req, res);
 
     if (method === 'GET' && url === '/users') {
+        const users = database.select('users');
+
         return res.end(JSON.stringify(users));
     }
 
@@ -19,19 +22,18 @@ const server = http.createServer(async (req, res) => {
 
         const { name, email } = req.body;
 
-        users.push({
+        const user = {
             id: 1,
             name, // same as name = name or name = body.name
             email // same as email = email or email = body.email
-        })
-        return res
-            .writeHead(201)
-            .end()
+        }
+
+        database.insert('users', user);
+
+        return res.writeHead(201).end()
     }
 
-    return res
-        .writeHead(404)
-        .end();
+    return res.writeHead(404).end();
 })
 
 // localhost:3333
