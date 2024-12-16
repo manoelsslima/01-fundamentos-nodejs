@@ -1,6 +1,5 @@
 import fs from 'node:fs/promises';
 
-
 // import.meta.url: complete path to file. Relative to database.js file
 const databasePath = new URL('../db.json', import.meta.url);
 
