@@ -7,7 +7,10 @@ export function buildRoutePath(path) {
     // ?<id> => give name to the group
     const pathWithParams = path.replaceAll(routerParametersRegex, '(?<$1>[a-z0-9\-_]+)')
     // ^ => starts with
-    const pathRegex = new RegExp(`^${pathWithParams}`)
+    // ? => after ? is optional
+    // $ => must end with the regex
+    // (.*) => everything after ?
+    const pathRegex = new RegExp(`^${pathWithParams}(?<query>\\?(.*))?$`)
 
     return pathRegex;
 }

@@ -23,10 +23,21 @@ export class Database {
         fs.writeFile(databasePath, JSON.stringify(this.#database));
     }
 
-    select(table) {
+    select(table, search) {
         // ?? - if doesn't exist a key inside database,
         // return an empty array
-        const data = this.#database[table] ?? [];
+        let data = this.#database[table] ?? [];
+
+        if (search) {
+            data = data.filter(row => {
+                // Object.entries
+                // { name: "Manoel", email: "manoel@example.com" }
+                // [ ['name', 'Manoel'], ['email', 'manoel@example.com']]
+                return Object.entries(search).some(([key, value]) => {
+                    return row[key].toLowerCase().includes(value.toLowerCase());
+                });
+            });
+        }
 
         return data;
     }

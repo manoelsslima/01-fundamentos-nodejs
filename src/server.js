@@ -3,6 +3,7 @@ import http from 'node:http';
 // when using "type": "module" in package.json, we must explicit the extension .js on imports
 import { json } from './middlewares/json.js';
 import { routes } from './routes.js';
+import { extractQueryParams } from './utils/extract-query-params.js';
 
 // Query Params: URL Stateful => Filtros, paginação, não-obrigatórios
 // http://localhost:3333/users?userId=1
@@ -30,9 +31,13 @@ const server = http.createServer(async (req, res) => {
 
         const routeParams = req.url.match(route.path);
 
-        req.params = { ...routeParams.groups };
+        //console.log(extractQueryParams(routeParams.groups.query));
 
-        console.log();
+        const { query, ...params } = routeParams.groups;
+
+        req.params = params;
+
+        req.query = query ? extractQueryParams(query) : {};
 
         return route.handler(req, res);
     }
