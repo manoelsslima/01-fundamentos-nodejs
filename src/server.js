@@ -9,9 +9,10 @@ import { routes } from './routes.js';
 
 // Route Params: Identificação de recurso
 // GET http://localhost:3333/users/1
+// DELETE http://localhost:3333/users/1
 
 // Request Body: Envio de informações de um formulário (HTTPS)
-// POST http://localhost:3333/users/1
+// POST http://localhost:3333/users
 
 
 const server = http.createServer(async (req, res) => {
@@ -22,10 +23,17 @@ const server = http.createServer(async (req, res) => {
     await json(req, res);
 
     const route = routes.find(route => {
-        return route.method === method && route.path === url;
+        return route.method === method && route.path.test(url);
     });
 
     if (route) {
+
+        const routeParams = req.url.match(route.path);
+
+        req.params = { ...routeParams.groups };
+
+        console.log();
+
         return route.handler(req, res);
     }
 
